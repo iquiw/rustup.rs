@@ -27,6 +27,9 @@ cp target/"$TARGET"/release/rustup-init.sha256 "$bindest/"
 cp target/"$TARGET"/release/rustup-setup "$bindest/"
 cp target/"$TARGET"/release/rustup-setup.sha256 "$bindest/"
 
+echo "$bindest"
+ls "$bindest"
+
 if [ "$TARGET" != "x86_64-unknown-linux-gnu" ]; then
     exit 0
 fi

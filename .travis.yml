@@ -19,62 +19,66 @@ matrix:
   include:
     # Linux builds use the `rust-slave-dist` image so we link them against a
     # "super old glibc" to ensure that it runs on as many platforms as possible.
+    # - os: linux
+    #   env: TARGET=x86_64-unknown-linux-gnu NO_ADD=1
+    # - &linux
+    #   os: linux
+    #   env: TARGET=i686-unknown-linux-gnu
+    #   if: branch != master
+
     - os: linux
-      env: TARGET=x86_64-unknown-linux-gnu NO_ADD=1
-    - &linux
-      os: linux
-      env: TARGET=i686-unknown-linux-gnu
+      env: SKIP_TESTS=1 TARGET=x86_64-unknown-netbsd
       if: branch != master
 
     # Cross builds happen in the `rust-slave-linux-cross` image to ensure that
     # we use the right cross compilers for these targets. That image should
     # bundle all the gcc cross compilers to enable us to build OpenSSL
-    - { <<: *linux, env: SKIP_TESTS=1 TARGET=arm-unknown-linux-gnueabi       }
-    - { <<: *linux, env: SKIP_TESTS=1 TARGET=arm-unknown-linux-gnueabihf     }
-    - { <<: *linux, env: SKIP_TESTS=1 TARGET=armv7-unknown-linux-gnueabihf   }
-    - { <<: *linux, env: SKIP_TESTS=1 TARGET=aarch64-unknown-linux-gnu       }
-    - { <<: *linux, env: SKIP_TESTS=1 TARGET=x86_64-unknown-freebsd          }
-    - { <<: *linux, env: SKIP_TESTS=1 TARGET=x86_64-unknown-netbsd           }
-    - { <<: *linux, env: SKIP_TESTS=1 TARGET=powerpc-unknown-linux-gnu       }
-    - { <<: *linux, env: SKIP_TESTS=1 TARGET=powerpc64-unknown-linux-gnu     }
-    - { <<: *linux, env: SKIP_TESTS=1 TARGET=powerpc64le-unknown-linux-gnu   }
-    - { <<: *linux, env: SKIP_TESTS=1 TARGET=mips-unknown-linux-gnu          }
-    - { <<: *linux, env: SKIP_TESTS=1 TARGET=mipsel-unknown-linux-gnu        }
-    - { <<: *linux, env: SKIP_TESTS=1 TARGET=mips64-unknown-linux-gnuabi64   }
-    - { <<: *linux, env: SKIP_TESTS=1 TARGET=mips64el-unknown-linux-gnuabi64 }
-    - { <<: *linux, env: SKIP_TESTS=1 TARGET=s390x-unknown-linux-gnu         }
-    - { <<: *linux, env: SKIP_TESTS=1 TARGET=arm-linux-androideabi           }
-    - { <<: *linux, env: SKIP_TESTS=1 TARGET=armv7-linux-androideabi         }
-    - { <<: *linux, env: SKIP_TESTS=1 TARGET=aarch64-linux-android           }
-    - { <<: *linux, env: SKIP_TESTS=1 TARGET=i686-linux-android              }
-    - { <<: *linux, env: SKIP_TESTS=1 TARGET=x86_64-linux-android            }
+    # - { <<: *linux, env: SKIP_TESTS=1 TARGET=arm-unknown-linux-gnueabi       }
+    # - { <<: *linux, env: SKIP_TESTS=1 TARGET=arm-unknown-linux-gnueabihf     }
+    # - { <<: *linux, env: SKIP_TESTS=1 TARGET=armv7-unknown-linux-gnueabihf   }
+    # - { <<: *linux, env: SKIP_TESTS=1 TARGET=aarch64-unknown-linux-gnu       }
+    # - { <<: *linux, env: SKIP_TESTS=1 TARGET=x86_64-unknown-freebsd          }
+    # - { <<: *linux, env: SKIP_TESTS=1 TARGET=x86_64-unknown-netbsd           }
+    # - { <<: *linux, env: SKIP_TESTS=1 TARGET=powerpc-unknown-linux-gnu       }
+    # - { <<: *linux, env: SKIP_TESTS=1 TARGET=powerpc64-unknown-linux-gnu     }
+    # - { <<: *linux, env: SKIP_TESTS=1 TARGET=powerpc64le-unknown-linux-gnu   }
+    # - { <<: *linux, env: SKIP_TESTS=1 TARGET=mips-unknown-linux-gnu          }
+    # - { <<: *linux, env: SKIP_TESTS=1 TARGET=mipsel-unknown-linux-gnu        }
+    # - { <<: *linux, env: SKIP_TESTS=1 TARGET=mips64-unknown-linux-gnuabi64   }
+    # - { <<: *linux, env: SKIP_TESTS=1 TARGET=mips64el-unknown-linux-gnuabi64 }
+    # - { <<: *linux, env: SKIP_TESTS=1 TARGET=s390x-unknown-linux-gnu         }
+    # - { <<: *linux, env: SKIP_TESTS=1 TARGET=arm-linux-androideabi           }
+    # - { <<: *linux, env: SKIP_TESTS=1 TARGET=armv7-linux-androideabi         }
+    # - { <<: *linux, env: SKIP_TESTS=1 TARGET=aarch64-linux-android           }
+    # - { <<: *linux, env: SKIP_TESTS=1 TARGET=i686-linux-android              }
+    # - { <<: *linux, env: SKIP_TESTS=1 TARGET=x86_64-linux-android            }
 
     # On OSX we want to target 10.7 so we ensure that the appropriate
     # environment variable is set to tell the linker what we want.
     #
     # TODO: figure out why `xcode9.3`, the first image with OSX 10.13, breaks.
     # Unclear why!
-    - &mac
-      os: osx
-      osx_image: xcode9.2
-      if: branch != master
-      env: MACOSX_DEPLOYMENT_TARGET=10.7 TARGET=x86_64-apple-darwin NO_ADD=1
-    - <<: *mac
-      env: MACOSX_DEPLOYMENT_TARGET=10.7 TARGET=i686-apple-darwin
+    # - &mac
+    #   os: osx
+    #   osx_image: xcode9.2
+    #   if: branch != master
+    #   env: MACOSX_DEPLOYMENT_TARGET=10.7 TARGET=x86_64-apple-darwin NO_ADD=1
+    # - <<: *mac
+    #   env: MACOSX_DEPLOYMENT_TARGET=10.7 TARGET=i686-apple-darwin
 
-    - name: rustup-init.sh on CentOS 6
-      language: minimal
-      install:
-      script:
-        - docker run
-            --volume "$TRAVIS_BUILD_DIR":/checkout:ro
-            --workdir /checkout
-            --rm
-            -it
-            centos:6
-            sh ./ci/raw_init.sh
-      before_deploy:
-      deploy:
+    # - name: rustup-init.sh on CentOS 6
+    #   language: minimal
+    #   install:
+    #   script:
+    #     - docker run
+    #         --volume "$TRAVIS_BUILD_DIR":/checkout:ro
+    #         --workdir /checkout
+    #         --rm
+    #         -it
+    #         centos:6
+    #         sh ./ci/raw_init.sh
+    #   before_deploy:
+    #   deploy:
 
 install:
   - sh rustup-init.sh --default-toolchain=stable -y
@@ -108,14 +112,12 @@ before_deploy:
   - sh ci/prepare-deploy-travis.sh
 
 deploy:
-  - provider: s3
-    bucket: dev-static-rust-lang-org
-    skip_cleanup: true
-    local_dir: deploy
-    upload_dir: rustup
-    acl: public_read
-    region: us-west-1
-    access_key_id: $AWS_ACCESS_KEY_ID
-    secret_access_key: $AWS_SECRET_ACCESS_KEY
-    on:
-      branch: stable
+  provider: releases
+  api_key:
+    secure: HOVFf71fVA2wdTan3HdQdUwILlxZ7tmYfb2zCgs35s4FMl9ABnft3zGU0wYtT30u5UvBeizo+6vAl6ksj/j2+jjklbUJr9QpYffa0+E2TbqeRPL1pzAV+sPpJLEOa+eDoAHZYID+KVkvLCNO3loKvVnpyzEvwOraHXGfXLBFkQ9HxSq3MxysOaagFeD+WMDtFJTqjwTjxxv+5SiC3GH9ufJBmHKkTcSL//FCUhvKs+3Ejz35nAGTf9ZPudkU7u5mh8OURNwzk04CTh1Je39klMoYI+Sgkz9N4fHQWWmF3pmbECTgV+nqd/d8K93kkA+CYSJOU8i7nhKr+HqMn4A9zLGEaMDmwzRdyWUse0GWX0VrcCgf/YR247Rt9B3byiZINaLMTd+66YT3GnPYebcxMRwR33SFIvW9QCSSn7JNL2wcYSzPt7pSfiT3lg2j98KWLZ6cuziwvec5MF55E9/IY+klqPHwo0igtacOGt015VoP3ZuFRWaKIRGf2aizIn1IgjnxxTQjujBEdqPSmGY6gKgRJn1OycPB1PkEUhRcykqcQqJqPXG+mxHXBsckCC9J7xWNXFG5sXVtvzn/DFcRcZhyz0W+TDWu5jTOjyYTXJrWHSOpHr1Y1hXLbfYEpYS9LKwE+gESZWKgcsR1xXv25m/VSUTm6efGuG5Rg3outok=
+  file:
+    - deploy/dist/x86_64-unknown-netbsd/rustup-init
+  skip_cleanup: true
+  on:
+    repo: iquiw/rustup.rs
+    branch: netbsd-target
