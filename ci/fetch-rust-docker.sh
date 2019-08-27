@@ -25,6 +25,7 @@ case "$TARGET" in
   x86_64-unknown-linux-gnu)        image=dist-x86_64-linux ;;
   i686-unknown-linux-gnu)          image=dist-i686-linux ;;
   x86_64-unknown-freebsd)          image=dist-x86_64-freebsd ;;
+  x86_64-unknown-netbsd)           image=dist-x86_64-netbsd ;;
   *) exit ;;
 esac
 
